@@ -56,6 +56,7 @@ class _HomePageState extends State<HomePage> {
                     childAspectRatio: 9 / 16,
                   ),
                   itemBuilder: (context, index) => Container(
+                    padding: const EdgeInsets.all(10),
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(18),
@@ -66,7 +67,75 @@ class _HomePageState extends State<HomePage> {
                         strokeAlign: BorderSide.strokeAlignCenter,
                       ),
                     ),
-                    child: Column(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: Image.asset(
+                              productCtrl.products[index].image,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Expanded(
+                          flex: 2,
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  AppText(
+                                    productCtrl.products[index].name,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
+                                  GestureDetector(
+                                    child: AppText(
+                                        productCtrl.products[index].sizes[0],
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                        color: AppColors.primary),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: SliderTheme(
+                                      data: SliderTheme.of(context).copyWith(
+                                        trackShape: CustomTrackShape(),
+                                      ),
+                                      child: Slider(
+                                        min: 0,
+                                        max: 100,
+                                        value: 50,
+                                        onChanged: (value) {},
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  AppText(
+                                    '50',
+                                    textAlign: TextAlign.right,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    color: AppColors.primary,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 )
               ],
@@ -75,5 +144,25 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+}
+
+class CustomTrackShape extends RoundedRectSliderTrackShape {
+  @override
+  Rect getPreferredRect({
+    required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    // Return a rectangle that spans the entire width of the Slider's parent widget
+    final double trackHeight = sliderTheme.trackHeight ?? 2;
+    final double trackLeft = offset.dx;
+    final double trackTop =
+        offset.dy + (parentBox.size.height - trackHeight) / 2;
+    final double trackWidth = parentBox.size.width;
+
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }
