@@ -28,7 +28,7 @@ class ProductController {
       name: "Ice Coffee",
       sizes: ["S", "M", "L"],
       price: [2.70, 3.00, 3.40],
-      image: "assets/images/cafe (5).jpg",
+      image: "assets/images/cafe (4).jpg",
     ),
     Product(
       id: 5,

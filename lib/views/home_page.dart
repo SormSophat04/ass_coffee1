@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:ass_coffee_clune/controllers/product_controller.dart';
 import 'package:flutter/material.dart';
 
+import 'component/slider.dart';
 import 'component/style.dart';
 import 'component/text_feil.dart';
 
@@ -12,6 +15,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int quatityCount = 0;
+
+  void incrementQty() {
+    setState(() {
+      quatityCount++;
+    });
+  }
+
+  void decrementQty() {
+    setState(() {
+      if (quatityCount > 0) {
+        quatityCount--;
+      }
+    });
+  }
+
   final productCtrl = ProductController();
   @override
   Widget build(BuildContext context) {
@@ -53,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                     crossAxisCount: 2,
                     crossAxisSpacing: 15,
                     mainAxisSpacing: 15,
-                    childAspectRatio: 9 / 16,
+                    childAspectRatio: 9 / 17,
                   ),
                   itemBuilder: (context, index) => Container(
                     padding: const EdgeInsets.all(10),
@@ -63,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                       // color: Colors.grey.shade400,
                       border: Border.all(
                         width: 2,
-                        color: AppColors.primary.withOpacity(0.3),
+                        color: AppColors.primary.withOpacity(0.1),
                         strokeAlign: BorderSide.strokeAlignCenter,
                       ),
                     ),
@@ -71,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          flex: 4,
+                          flex: 5,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(6),
                             child: Image.asset(
@@ -82,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const SizedBox(height: 10),
                         Expanded(
-                          flex: 2,
+                          flex: 3,
                           child: Column(
                             children: [
                               Row(
@@ -109,16 +128,10 @@ class _HomePageState extends State<HomePage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
-                                    child: SliderTheme(
-                                      data: SliderTheme.of(context).copyWith(
-                                        trackShape: CustomTrackShape(),
-                                      ),
-                                      child: Slider(
-                                        min: 0,
-                                        max: 100,
-                                        value: 50,
-                                        onChanged: (value) {},
-                                      ),
+                                    child: Slider_bar(
+                                      onChanged: (value) {
+                                        log('value = $value' as num);
+                                      },
                                     ),
                                   ),
                                   const SizedBox(width: 10),
@@ -131,6 +144,45 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               ),
+                              const SizedBox(width: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  AppText(
+                                    "\$${productCtrl.products[index].price[0]}",
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    color: AppColors.dark,
+                                  ),
+                                  SizedBox(
+                                    child: Row(
+                                      children: [
+                                        IconButton(
+                                          onPressed: decrementQty,
+                                          icon: const Icon(
+                                            Icons.remove,
+                                            color: AppColors.primary,
+                                          ),
+                                        ),
+                                        Text(
+                                          quatityCount.toString(),
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        IconButton(
+                                          onPressed: incrementQty,
+                                          icon: const Icon(
+                                            Icons.add,
+                                            color: AppColors.primary,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              )
                             ],
                           ),
                         ),
@@ -144,25 +196,5 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
-}
-
-class CustomTrackShape extends RoundedRectSliderTrackShape {
-  @override
-  Rect getPreferredRect({
-    required RenderBox parentBox,
-    Offset offset = Offset.zero,
-    required SliderThemeData sliderTheme,
-    bool isEnabled = false,
-    bool isDiscrete = false,
-  }) {
-    // Return a rectangle that spans the entire width of the Slider's parent widget
-    final double trackHeight = sliderTheme.trackHeight ?? 2;
-    final double trackLeft = offset.dx;
-    final double trackTop =
-        offset.dy + (parentBox.size.height - trackHeight) / 2;
-    final double trackWidth = parentBox.size.width;
-
-    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }
